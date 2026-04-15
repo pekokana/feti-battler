@@ -1,0 +1,121 @@
+import flet as ft
+import hashlib
+import io
+import base64
+
+async def main(page: ft.Page):
+    page.title = "FETI-BATTLER Scanner"
+    page.theme_mode = ft.ThemeMode.DARK
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.scroll = ft.ScrollMode.AUTO
+
+    result_container = ft.Column([], visible=False, horizontal_alignment="center", spacing=10)
+
+    async def handle_pick_files(e):
+        # ファイルピッカーを起動（Web版対応のためwith_data=True）
+        files = await ft.FilePicker().pick_files(
+            file_type=ft.FilePickerFileType.IMAGE,
+            allow_multiple=False,
+            with_data=True
+        )
+        
+        if not files or len(files) == 0:
+            return
+
+        picked_file = files[0]
+        img_bytes = picked_file.bytes
+
+        if not img_bytes:
+            return
+
+        # --- 1. ハッシュによる基礎ステータス算出 ---
+        # ファイルの指紋（ハッシュ）から唯一無二の数値を生成
+        seed = hashlib.sha256(img_bytes).hexdigest()
+        hp = int(seed[0:4], 16) % 9000 + 1000
+        atk = int(seed[4:8], 16) % 4000 + 500
+
+        # --- 2. 属性・ランク判定（Pillowを使わずバイナリデータから算出） ---
+        
+        # ハッシュの一部を使って「素材」を運命づける
+        material_val = int(seed[10:13], 16) % 255
+        
+        if material_val < 50:
+            material = "漆黒のラバー"
+            m_color = ft.Colors.GREY_900
+        elif material_val < 110:
+            material = "至高のスキン"
+            m_color = ft.Colors.ORANGE_200
+        elif material_val < 170:
+            material = "伝統のスク水 / 制服"
+            m_color = ft.Colors.BLUE_800
+        elif material_val < 230:
+            material = "聖なるシルク / ナース"
+            m_color = ft.Colors.WHITE
+        else:
+            material = "未知の魔導素材"
+            m_color = ft.Colors.GREY_400
+
+        # ファイルサイズから執着心を判定
+        file_size = len(img_bytes)
+        if file_size > 5_000_000:
+            obsession = "顕微鏡レベルの執着（毛穴まで愛せ）"
+        elif file_size > 1_000_000:
+            obsession = "深淵への入り口"
+        else:
+            obsession = "淡白な収集癖（まずは画質の確保から）"
+
+        # ハッシュ末尾で純度を判定
+        purity_val = int(seed[-2:], 16)
+        if purity_val < 40:
+            purity = "極（SSS）"
+        elif purity_val < 150:
+            purity = "良（A）"
+        else:
+            purity = "雑念混じり（C）"
+
+        # 画像表示用にBase64へ変換
+        img_str = base64.b64encode(img_bytes).decode()
+
+        # UI更新
+        result_container.controls.clear()
+        result_container.controls.extend([
+            ft.Text("── SCAN COMPLETE ──", size=14, color="grey"),
+            ft.Image(
+                src=f"data:image/png;base64,{img_str}",
+                width=300, 
+                border_radius=15,
+            ),
+            ft.Text(f"【 {material} 】", size=28, weight="bold", color=m_color),
+            ft.Row([
+                ft.Text(f"HP: {hp}", size=24, weight="bold", color="green"),
+                ft.Text(f"ATK: {atk}", size=24, weight="bold", color="red"),
+            ], alignment="center", spacing=30),
+            ft.Divider(height=10, color="white24"),
+            ft.Text(f"フェチ純度：{purity}", size=18, weight="bold"),
+            ft.Text(f"執着心ランク：{obsession}", size=14, italic=True, color="blue200"),
+            ft.Text(f"解析シード：{seed[:8]}...", size=10, color="grey"),
+        ])
+        result_container.visible = True
+        page.update()
+
+    # ページ構成
+    page.add(
+        ft.SafeArea(
+            content=ft.Column([
+                ft.Text("FETI-BATTLER", size=45, weight="black", italic=True),
+                ft.Text("〜 こだわりの「フェチ」を測定せよ 〜", size=16, color="grey"),
+                ft.Container(height=10),
+                ft.Button(
+                    content=ft.Row([ft.Icon(ft.Icons.CAMERA_ALT), ft.Text("画像を選択してスキャン")], alignment="center"),
+                    on_click=handle_pick_files,
+                    width=280,
+                    height=50,
+                ),
+                ft.Divider(height=40, color="transparent"),
+                result_container
+            ], horizontal_alignment="center")
+        )
+    )
+
+if __name__ == "__main__":
+    ft.run(main)
