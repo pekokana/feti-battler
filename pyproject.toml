@@ -1,0 +1,21 @@
+[project]
+name = "feti-battler"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flet>=0.84.0",
+]
+
+[tool.flet.splash]
+color = "#ffffff"
+dark_color = "#333333"
+
+[tool.flet.app.boot_screen]     # or [tool.flet.<PLATFORM>.app.boot_screen]
+show = true
+message = "Preparing the app for its first launch…"
+
+[tool.flet.app.startup_screen]      # or [tool.flet.<PLATFORM>.app.startup_screen]
+show = true
+message = "Starting up the app…"
