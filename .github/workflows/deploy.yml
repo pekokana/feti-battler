@@ -31,7 +31,7 @@ jobs:
 
       - name: Flet Publish
         run: |
-          uv run flet publish ./main.py --base-url /feti-battler/ --web-renderer canvaskit
+          uv run flet publish ./main.py --base-url /feti-battler/app/ --web-renderer canvaskit
 
           # ビルド成果物のディレクトリ名をappに変更し、LPをルートに配置する準備
           mv dist app
