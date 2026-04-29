@@ -33,6 +33,13 @@ jobs:
         run: |
           uv run flet publish ./main.py --base-url /feti-battler/ --web-renderer canvaskit
 
+          # ビルド成果物のディレクトリ名をappに変更し、LPをルートに配置する準備
+          mv dist app
+          mkdir dist
+          mv app dist/
+          # ルートのLP用index.htmlをdistの直下にコピー
+          cp index.html dist/
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

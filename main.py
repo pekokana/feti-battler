@@ -43,20 +43,50 @@ async def main(page: ft.Page):
         luk = int(seed[16:20], 16) % 20 + 5
         
         material_val = int(seed[10:13], 16) % 255
+        # 1. 二つ名（属性を修飾してカッコよくする）
+        prefixes = [
+            "轟天の", "静寂の", "黄金の", "混沌の", "氷結の", 
+            "紅蓮の", "宵闇の", "閃光の", "比類なき", "覚醒せし"
+        ]
+        p_name = prefixes[material_val % len(prefixes)]
+
+        # 2. 属性判定（コンプラ対応・王道ファンタジー風）
         if material_val < 50:
-            m, col = "漆黒 of ラバー", ft.Colors.AMBER_ACCENT_200
+            m, col = "黒鉄の焔", ft.Colors.AMBER_ACCENT_200 # 旧ラバー
         elif material_val < 110:
-            m, col = "至高 of スキン", ft.Colors.ORANGE_200
+            m, col = "大地の息吹", ft.Colors.ORANGE_200 # 旧スキン
         elif material_val < 170:
-            m, col = "伝統 of スク水 / 制服", ft.Colors.BLUE_800
+            m, col = "深淵の水鏡", ft.Colors.BLUE_800  # 旧スク水
         elif material_val < 230:
-            m, col = "聖なるシルク / ナース", ft.Colors.WHITE
+            m, col = "天上の福音", ft.Colors.WHITE     # 旧シルク
         else:
-            m, col = "未知の魔導素材", ft.Colors.GREY_400
+            m, col = "虚無の残光", ft.Colors.GREY_400
         
+        full_name = f"{p_name}{m}"
+
+        # --- レアリティ判定の追加 ---
+        total_score = hp + atk
+        
+        if total_score >= 8600:
+            rarity = "LEGEND"
+            rarity_color = ft.Colors.AMBER_400  # 黄金
+        elif total_score >= 7800:
+            rarity = "EPIC"
+            rarity_color = ft.Colors.PURPLE_400 # 紫
+        elif total_score >= 6000:
+            rarity = "RARE"
+            rarity_color = ft.Colors.BLUE_400   # 青
+        else:
+            rarity = "COMMON"
+            rarity_color = ft.Colors.GREY_400   # グレー
+
         return {
-            "hp": hp, "max_hp": hp, "atk": atk, "def": def_val, 
-            "spd": spd, "luk": luk, "material": m, "color": col, 
+            "hp": hp, "max_hp": hp, "atk": atk, 
+            "total": total_score, # 合計値も返しておくと便利
+            "rarity": rarity, 
+            "rarity_color": rarity_color,
+            "def": def_val, 
+            "spd": spd, "luk": luk, "material": full_name, "color": col, 
             "seed": seed[:20] # 通信用の短いシード
         }
 
@@ -96,16 +126,8 @@ async def main(page: ft.Page):
 
     # --- ヘルパー: ステータス表示の更新 ---
     def update_stat_display(ui_container, data):
-        # create_card内のColumnの構造に合わせてインデックスを修正
-        # [0] FilledButton ("画像で読み込み") <- 追加されたので1つずれた
-        # [1] Text ("UNIT 1")
-        # [2] load_header
-        # [3] Divider
-        # [4] Image / Identicon
-        # [5] Text ("WAITING...")
-        # [6] stat_row (←ここを取得したい)
-        
-        stat_row = ui_container.content.controls[6] # 5から6に変更
+       
+        stat_row = ui_container.content.controls[7] 
         stats = ["hp", "atk", "def", "spd", "luk"]
         for i, key in enumerate(stats):
             stat_row.controls[i].content.controls[1].value = str(data[key])
@@ -153,9 +175,9 @@ async def main(page: ft.Page):
                 log_msg, effect_color = f"{attacker_name}: 攻撃！", attacker["color"]
 
                 if random.randint(1, 100) <= attacker["luk"]:
-                    dmg, log_msg, effect_color = int(dmg * 1.5), f"{attacker_name}:★会心！", ft.Colors.ORANGE_600
+                    dmg, log_msg, effect_color = int(dmg * 1.5), f"{attacker_name}:★ナイスアタック！", ft.Colors.ORANGE_600
                 elif random.randint(1, 100) <= defender["luk"]:
-                    dmg, log_msg, effect_color = max(1, int(dmg * 0.2)), f"{attacker_name}:★ガード！", ft.Colors.CYAN_300
+                    dmg, log_msg, effect_color = max(1, int(dmg * 0.2)), f"{attacker_name}:★ナイスガード！", ft.Colors.CYAN_300
 
                 defender["hp"] -= dmg
                 if defender["hp"] < 0: defender["hp"] = 0
@@ -188,10 +210,6 @@ async def main(page: ft.Page):
         ui = players[idx]["ui"]
         
         # UIの更新
-        # ui.content.controls[4].src = f"data:image/png;base64,{img_base64}"
-        # ui.content.controls[4].opacity = 1.0  # 透明度を戻す（重要！）
-        # ui.content.controls[5].value = res["material"]
-        # ui.content.controls[5].color = res["color"]
 
         # 既存の controls[4] が Image か Identicon かに関わらず、新しい Image インスタンスで上書きする
         ui.content.controls[4] = ft.Image(
@@ -202,12 +220,16 @@ async def main(page: ft.Page):
             fit=ft.BoxFit.CONTAIN,
         )
         
+        # レアリティの更新
+        ui.content.controls[5].value = f"◆ {res['rarity']} ◆"
+        ui.content.controls[5].color = res["rarity_color"]
+
         # ほかの情報の更新
-        ui.content.controls[5].value = res["material"]
-        ui.content.controls[5].color = res["color"]
+        ui.content.controls[6].value = res["material"]
+        ui.content.controls[6].color = res["color"]
 
         # ボタンの更新
-        target_text_button = ui.content.controls[7]
+        target_text_button = ui.content.controls[8]
         
         target_text_button.content.controls[1].value = f"CODE: {res['seed']}"
         target_text_button.content.controls[1].color = ft.Colors.BLUE_200
@@ -234,8 +256,12 @@ async def main(page: ft.Page):
         new_icon = generate_identicon(res["seed"], res["color"])
         ui.content.controls[4] = new_icon # Image(3)の次なので 4
 
-        target_title = ui.content.controls[5] # Text("WAITING...") の場所なので 5
-        target_text_button = ui.content.controls[7] # code_display の場所なので 7
+        # レアリティの更新 [5]
+        ui.content.controls[5].value = f"◆ {res['rarity']} ◆"
+        ui.content.controls[5].color = res["rarity_color"]
+
+        target_title = ui.content.controls[6] # Text("WAITING...") の場所なので 5
+        target_text_button = ui.content.controls[8] # code_display の場所なので 7
 
         target_title.value = f"{res['material']}"
         target_title.color = res["color"]
@@ -328,6 +354,7 @@ async def main(page: ft.Page):
                 load_header, # [1]
                 ft.Divider(height=1, color="white10"), # [2]
                 ft.Image(src="https://flet.dev/img/pages/getting-started/icon.png", width=140, height=140, opacity=0.3), # [3]
+                ft.Text("", size=10, weight="bold", font_family="Dot"),
                 ft.Text("WAITING...", size=16, weight="bold", font_family="Dot"), # [4]
                 stat_row, # [5]
                 code_display, # [6]
