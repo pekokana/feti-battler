@@ -1,155 +1,135 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="ja">
 <head>
-  <base href="/feti-battler/">
-
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Add your description here">
-
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="feti-battler">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon-192.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png" />
-
-  <title>feti-battler</title>
-  <link rel="manifest" href="manifest.json">
-
-  <script>
-    var flet = {
-      pyodide: false,
-      multiView: false,
-      noCdn: false,
-      webSocketEndpoint: "/ws",
-      entrypointBaseUrl: "/",
-      assetBase: "/",
-      routeUrlStrategy: "path",
-      canvasKitBaseUrl: "/canvaskit/",
-      pyodideUrl: "/pyodide/pyodide.js",
-      webRenderer: "auto",
-      fontFallbackBaseUrl: "assets/fonts/", // for Noto Emoji, use Google CDN
-      appPackageUrl: "app.tar.gz"
-    }
-
-    flet.flutterAppLoaded = new Promise((resolve) => {
-      flet.flutterAppResolve = resolve;
-    });
-
-    flet.flutterAppLoaded.then((flutterApp) => {
-      console.log("Flutter app loaded");
-      if (flet.multiView) {
-        console.log(flutterApp.addView({
-          hostElement: document.querySelector('#view-1'),
-          initialData: {
-            script: 'print("Hello from view 1")',
-            randomValue: Math.floor(Math.random() * 100),
-          },
-          viewConstraints: {
-            //maxWidth: Infinity,
-            maxHeight: Infinity,
-            minHeight: 300,
-            minWidth: 620
-          }
-        }));
-        console.log(flutterApp.addView({
-          hostElement: document.querySelector('#view-2'),
-          initialData: {
-            script: 'print("Hello from view 2")',
-            bar: "baz"
-          },
-          viewConstraints: {
-            minWidth: 620,
-            //maxWidth: 320,
-            //minHeight: 400,
-            maxHeight: 400,
-          }
-        }));
-      }
-    });
-  </script>
-
-  <script>
-flet.pyodide = true;
-flet.micropipIncludePre = false;
-flet.pythonModuleName = "main";
-flet.noCdn=false;
-flet.webRenderer="canvaskit";
-flet.routeUrlStrategy="path";
-flet.entrypointBaseUrl="/feti-battler/";
-flet.assetBase="/feti-battler/";
-</script>
-
-  <script src="python.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フェチバトル：デュエル - 公式紹介ページ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-900 text-gray-100 font-sans">
+    <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+        <h1 class="text-5xl font-black mb-6 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            画像フェチバトラー：デュエル
+        </h1>
+        <p class="text-xl mb-10 text-gray-400">画像から宿命のステータスを生成せよ。サーバー不要、コードで繋がる懐かしのバトラー。</p>
+        
+        <a href="./app/" class="inline-block bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-10 rounded-full transition-all transform hover:scale-105 shadow-lg shadow-red-900/50">
+            BATTLE START (アプリ起動)
+        </a>
 
-<body>
-  <div id="loading">
-    <style>
-      body {
-        inset: 0;
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
-        position: fixed;
-      }
+        <div class="mt-20 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <h3 class="text-cyan-400 font-bold mb-2">ハッシュ・デュエル</h3>
+                <p class="text-sm">画像から生成される256bitのシード値が、あなたのユニットの運命を決定します。</p>
+            </div>
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-700">
+                <h3 class="text-cyan-400 font-bold mb-2">サーバーレス共有</h3>
+                <p class="text-sm">強いキャラを見つけたら、20桁のコードを共有するだけ。即座に再現可能です。</p>
+            </div>
+        </div>
 
-      #loading {
-        align-items: center;
-        display: flex;
-        height: 100%;
-        justify-content: center;
-        width: 100%;
-      }
+        <div class="mt-20 py-12 bg-gray-800/50 rounded-3xl border border-cyan-500/30">
+            <h2 class="text-3xl font-bold mb-4 text-cyan-400">一人でも、無限に遊べる。</h2>
+            <p class="max-w-2xl mx-auto text-gray-300 px-6">
+                対戦相手がいなくても大丈夫。手持ちの画像フォルダから「最強の二枚」を選び出し、
+                どちらが真の勝者か、自分だけのトーナメントを開催しましょう。<br>
+                <span class="text-cyan-300 font-bold">偶然が生み出す「奇跡のステータス」を探し出すのは、あなたです。</span>
+            </p>
+        </div>
 
-      #loading img {
-        animation: 1s ease-in-out 0s infinite alternate breathe;
-        opacity: .66;
-        transition: opacity .4s;
-      }
+        <div class="mt-20">
+            <h2 class="text-3xl font-bold mb-10 text-gray-200">HOW TO PLAY</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex flex-col items-center p-4">
+                    <div class="w-12 h-12 bg-cyan-500 rounded-full flex items-center justify-center text-2xl font-bold mb-4">1</div>
+                    <h4 class="font-bold mb-2">画像を読み込む</h4>
+                    <p class="text-gray-400 text-sm">手持ちの画像を読み込むと、独自のアルゴリズムでステータスに変換されます。</p>
+                </div>
+                <div class="flex flex-col items-center p-4">
+                    <div class="w-12 h-12 bg-cyan-500 rounded-full flex items-center justify-center text-2xl font-bold mb-4">2</div>
+                    <h4 class="font-bold mb-2">コードを共有</h4>
+                    <p class="text-gray-400 text-sm">生成された「CODE」をコピーして、SNSや友人に共有しましょう。</p>
+                </div>
+                <div class="flex flex-col items-center p-4">
+                    <div class="w-12 h-12 bg-cyan-500 rounded-full flex items-center justify-center text-2xl font-bold mb-4">3</div>
+                    <h4 class="font-bold mb-2">デュエル開始！</h4>
+                    <p class="text-gray-400 text-sm">相手のコードを入力して「BATTLE START」。宿命の対決が始まります。</p>
+                </div>
+            </div>
+        </div>
 
-      #loading.main_done img {
-        opacity: 1;
-      }
+        <div class="mt-20">
+            <h2 class="text-3xl font-bold mb-10 text-gray-200 italic tracking-widest text-center">-- HALL OF FAME --</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!--　↓ここから追加領域-->
+            <div class="bg-gray-800 border-2 border-amber-500 p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between shadow-xl shadow-amber-900/10">
+                <div>
+                    <div class="absolute top-0 right-0 bg-amber-500 text-black text-[10px] font-bold px-2 py-0.5">LEGEND</div>
+                    <h3 class="text-lg font-bold text-amber-400 mb-2 text-left">静寂の大地の息吹</h3>
+                    <div class="flex justify-between text-xs mb-4 text-gray-400 font-mono">
+                        <span>HP: 7999</span>
+                        <span>ATK: 887</span>
+                        <span class="text-amber-400 font-bold">SUM: 8886</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="bg-black/40 p-2.5 rounded font-mono text-[11px] flex justify-between items-center text-gray-300 border border-white/5">
+                        <span class="truncate mr-2">ea5f7e8399754f9c4f4a</span>
+                        <button onclick="navigator.clipboard.writeText('ea5f7e8399754f9c4f4a')" class="shrink-0 text-[10px] bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors">COPY</button>
+                    </div>
+                    <p class="text-[10px] mt-3 text-gray-500 italic leading-tight text-left">
+                        ※LEGEND級の個体。バトルアプリにコードを貼り付けて召喚可能です。
+                    </p>
+                </div>
+            </div>
 
-      #loading.init_done img {
-        animation: .33s ease-in-out 0s 1 forwards zooooom;
-        opacity: .05;
-      }
+            <div class="bg-gray-800 border-2 border-purple-500 p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between shadow-xl shadow-purple-900/10">
+                <div>
+                    <div class="absolute top-0 right-0 bg-purple-500 text-black text-[10px] font-bold px-2 py-0.5">EPIC</div>
+                    <h3 class="text-lg font-bold text-purple-300 mb-2 text-left">黄金の大地の息吹</h3>
+                    <div class="flex justify-between text-xs mb-4 text-gray-400 font-mono">
+                        <span>HP: 6690</span>
+                        <span>ATK: 1498</span>
+                        <span class="text-purple-300 font-bold">SUM: 8188</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="bg-black/40 p-2.5 rounded font-mono text-[11px] flex justify-between items-center text-gray-300 border border-white/5">
+                        <span class="truncate mr-2">f8ca59d6ffd45ac66a8f</span>
+                        <button onclick="navigator.clipboard.writeText('f8ca59d6ffd45ac66a8f')" class="shrink-0 text-[10px] bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors">COPY</button>
+                    </div>
+                    <p class="text-[10px] mt-3 text-gray-500 italic leading-tight text-left">
+                        ※EPIC級の個体。バトルアプリにコードを貼り付けて召喚可能です。
+                    </p>
+                </div>
+            </div>
 
-      @keyframes breathe {
-        from {
-          transform: scale(0.4);
-          opacity: 1.0;
-        }
-
-        to {
-          transform: scale(0.35);
-          opacity: .7;
-        }
-      }
-
-      @keyframes zooooom {
-        from {
-          transform: scale(0.4)
-        }
-
-        to {
-          transform: scale(10)
-        }
-      }
-    </style>
-    <img src="icons/loading-animation.png" alt="Loading..." />
-  </div>
-  <script src="flutter_bootstrap.js" async></script>
-
-  <!-- <h1>View 1</h1>
-  <div id="view-1" style="display: flex; justify-content: center;"></div>
-  <h1>View 2</h1>
-  <div id="view-2"></div> -->
+            <div class="bg-gray-800 border-2 border-blue-500 p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between shadow-xl shadow-blue-900/10">
+                <div>
+                    <div class="absolute top-0 right-0 bg-blue-500 text-black text-[10px] font-bold px-2 py-0.5">RARE</div>
+                    <h3 class="text-lg font-bold text-blue-300 mb-2 text-left">黄金の大地の息吹</h3>
+                    <div class="flex justify-between text-xs mb-4 text-gray-400 font-mono">
+                        <span>HP: 5200</span>
+                        <span>ATK: 1286</span>
+                        <span class="text-blue-300 font-bold">SUM: 6486</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="bg-black/40 p-2.5 rounded font-mono text-[11px] flex justify-between items-center text-gray-300 border border-white/5">
+                        <span class="truncate mr-2">1c20c27a445394fed02c</span>
+                        <button onclick="navigator.clipboard.writeText('1c20c27a445394fed02c')" class="shrink-0 text-[10px] bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors">COPY</button>
+                    </div>
+                    <p class="text-[10px] mt-3 text-gray-500 italic leading-tight text-left">
+                        ※RARE級の個体。バトルアプリにコードを貼り付けて召喚可能です。
+                    </p>
+                </div>
+            </div>            
+<!--　↑ここまで追加領域-->
+            </div>
+        </div> 
 </body>
 </html>
