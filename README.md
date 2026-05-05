@@ -4,7 +4,7 @@
 Flet (Python) を使用し、GitHub Pages 上で WASM として動作します。
 
 ## デモ
-[[ここにGitHub PagesのURLを貼る]](https://pekokana.github.io/feti-battler/)
+[フェチバトル](https://pekokana.github.io/feti-battler/)
 
 ## 特徴
 - **画像ハッシュ化アルゴリズム**: 画像のバイナリデータを `SHA256` でハッシュ化し、その値をシードとして HP/ATK/SPD および「素材」を決定します。
