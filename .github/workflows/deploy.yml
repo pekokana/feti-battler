@@ -31,18 +31,24 @@ jobs:
 
       - name: Flet Publish
         run: |
+          # アプリのビルド
           uv run flet publish ./main.py --base-url /feti-battler/app/ --web-renderer canvaskit
-
-          # ビルド成果物のディレクトリ名をappに変更し、LPをルートに配置する準備
+          
+          # フォルダ整理
           mv dist app
-          mkdir dist
-          mv app dist/
-          # ルートのLP用index.htmlをdistの直下にコピー
-          cp index.html dist/
+          mkdir final_dist
+          mv app final_dist/
+          
+          # ルート資産（LP、SEO関連）を全てコピー
+          cp index.html final_dist/
+          cp sitemap.xml final_dist/
+          cp robots.txt final_dist/
+          cp google*.html final_dist/  
+
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./final_dist
           publish_branch: gh-pages
